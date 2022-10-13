@@ -1,0 +1,365 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <math.h>
+
+
+using namespace std;
+
+const int t = 5;		//quantidade mC!xima de produtos
+float auxpreco;
+int auxquant;
+string auxproduto;
+int cod = 0;
+int opcao;			// opcao do menu escolhida
+int qtd = 0;
+int qtdCadastrados = 0;		//quantos produtos jC! foram cadastrados
+string produto[t];		//vetor de nomes de produtos
+int quant[t];			//vetor de estoque do produto
+int estoque;
+float preco[t];			//vetor de Precos dos produtos
+string voltaMenu;		//variC!vel auxiliar para esperar o usuC!rio pressionar enter para voltar ao menu
+int codigoProduto ();
+void limpaTela ();		// declaraC'C#o da funC'C#o que limpa tela e volta para o menu
+void menu ();			// declaraC'C#o da funC'C#o que apresenta o MENU
+void leProdutos ();		// declaraC'C#o da funC'C#o que le os dados do produto e grava nos vetores
+void mostraProdutos ();		// declaraC'C#o da funC'C#o que apresenta os produtos
+int AlterarPrecro ();		//declaraC'C#o da funC'C#o que altera os produtos
+int AlterarEstoque ();		//declaraC'C#o da funC'C#o que remove os produtos
+int ExcluirProduto ();
+int VendaProduto();
+void ordemalfa();
+
+void
+ordemalfa()
+{
+    for (int i = 0; i < qtdCadastrados; i++)
+		{
+			for (int j = i + 1; j < qtdCadastrados; j++)
+			{
+				if (produto[j] < produto[i])
+				{
+					auxproduto = produto[i];
+					produto[i] = produto[j];
+					produto[j] = auxproduto;
+
+					auxquant = quant[i];
+					quant[i] = quant[j];
+					quant[j] = auxquant;
+
+					auxpreco = preco[i];
+					preco[i] = preco[j];
+					preco[j] = auxpreco;
+				}
+			}
+		}
+}
+
+int
+VendaProduto()
+{
+    
+	cout << "################ Vendas de Produtos ################" << endl;
+	if (qtdCadastrados > 0)
+	{
+		for (int i = 0; i < qtdCadastrados; i++)
+		{
+			cout << "Cod. Produto: 000" << i + 1 << endl;
+			cout << "Nome do produto: " << produto[i] << endl;
+			cout << "Quantidade: " << quant[i] << endl;
+			cout << "Preco: " << preco[i] << endl << endl;
+		}
+		cout << "Digite 0 para cancelar a operação "<<endl;
+		cout << "Digite o codigo para selecionar o produto: ";
+		cin >> cod;
+		if(cod == 0){
+		limpaTela (); 
+		}
+		cout << "Digite a quantidade de produtos deseja vender: ";
+		cin >> qtd;
+		if (quant[cod - 1] < qtd)
+		{
+			cout << "Quantidade informada menor que a quantidade em estoque!" << endl;
+		}
+		else
+		{
+
+			cout << "foi vendido  " << produto[cod - 1] << " " << qtd  << " UN " << " o valor ficou: R$ " << preco[cod - 1] * qtd << endl;
+			cout << "O estoque atual do Produto " << produto[cod - 1] << " eh " << quant[cod - 1] - qtd << endl;
+			quant[cod - 1] = quant[cod - 1] - qtd;
+
+		}
+	}
+	else
+	{
+		cout << "Nenhum produto Cadastrado " << endl << endl;
+	}
+	limpaTela();
+	return true;
+}
+
+int
+AlterarPreco ()
+{
+	cout << "################ Alterar Preco  ################" << endl;
+	if (qtdCadastrados > 0 )
+	{
+		for (int i = 0; i < qtdCadastrados; i++)
+		{
+			cout << "Cod. Produto: 000" << i + 1 << endl;
+			cout << "Nome do produto: " << produto[i] << endl;
+			cout << "Quantidade: " << quant[i] << endl;
+			cout << "Preco: " << preco[i] << endl << endl;
+		}
+		cout << "Digite 0 para cancelar a operação "<<endl;
+		cout << "Digite o codigo para selecionar o produto: ";
+		cin >> cod;
+		if(cod == 0){
+		limpaTela (); 
+		}
+		cout << "Cod. do produto: " << cod << endl;
+		cout << "Nome do produto: " << produto[cod - 1] << endl;
+		cout << "Preco: ";
+		cin >> preco[cod - 1];
+		cout << endl << endl;
+
+	}
+	else
+	{
+	    
+		cout << "Nenhum produto Cadastrado " << endl << endl;
+	}
+	limpaTela ();
+	return true;
+}
+
+int
+ExcluirProduto ()
+{
+	cout << "################ Excluir Produtos ################" << endl;
+	if (qtdCadastrados > 0 )
+	{
+		for (int i = 0; i < qtdCadastrados; i++)
+		{
+			cout << "Cod. Produto: 000" << i + 1 << endl;
+			cout << "Nome do produto: " << produto[i] << endl;
+			cout << "Quantidade: " << quant[i] << endl;
+			cout << "Preco: " << preco[i] << endl << endl;
+		}
+		cout << "Digite 0 para cancelar a operação "<<endl;
+		cout << "Digite o codigo para EXCLUIR o produto: ";
+		cin >> cod;
+		if(cod == 0){
+		limpaTela (); 
+		}
+		for ( int i = cod - 1; i < t - 1 ; i++)
+		{
+			preco[i] =  preco[i + 1];
+			produto[i] = produto[i + 1];
+			quant[i]= quant[i + 1];
+	       
+		}
+	    qtdCadastrados--;
+		cout << endl << endl;
+	}
+	else
+	{
+		cout << "Nenhum produto Cadastrado " << endl << endl;
+	}
+	limpaTela ();
+	return true;
+}
+
+int
+AlterarEstoque ()
+{
+	cout << "################ Alimentar Estoque ################" << endl;
+	if (qtdCadastrados > 0 )
+	{
+		for (int i = 0; i < qtdCadastrados; i++)
+		{
+			cout << "Cod. Produto: 000" << i + 1 << endl;
+			cout << "Nome do produto: " << produto[i] << endl;
+			cout << "Quantidade: " << quant[i] << endl;
+			cout << "Preco: " << preco[i] << endl << endl;
+		}
+		cout << "Digite 0 para cancelar a operação "<<endl;
+		cout << "Digite o codigo para selecionar o produto: ";
+		cin >> cod;
+		if(cod == 0){
+		limpaTela (); 
+		}
+		cout << "Quantidade: ";
+		cin >> estoque;
+		quant[cod - 1] = quant[cod - 1] + estoque;
+		quant[cod - 1];
+		cout << endl << endl;
+	}
+	else
+	{
+		cout << "Nenhum produto Cadastrado " << endl << endl;
+	}
+	limpaTela ();
+	return true;
+}
+
+void
+limpaTela ()
+{
+	cout << "pressione enter para voltar ao MENU...";
+	getline (cin, voltaMenu);	// getline permite ler mais de uma palavra na mesma variC!vel
+	getline (cin, voltaMenu);	// 2x getline para contornar o problema de passar pela variC!vel sem digital nada
+	system ("clear");		// limpa o console
+	menu ();
+}
+
+void
+leProdutos ()
+{
+	cout << "################ Cadastrar Produtos ################" << endl;
+	if (qtdCadastrados < t  )
+	{
+		cout << "Nome do produto: ";
+		getline (cin, produto[qtdCadastrados]);
+		getline (cin, produto[qtdCadastrados]);
+		cout << "Quantidade: ";
+		cin >> quant[qtdCadastrados];
+		if (quant[qtdCadastrados] > 0 )
+		{
+			cout << "Preco: ";
+			cin >> preco[qtdCadastrados];
+			cout << endl << endl;
+			qtdCadastrados++;
+		}
+		else
+		{
+			cout << "Valor incorreto! ";
+		}
+	}
+	else
+	{
+		cout << "Quantidade maxima de produtos atingida";
+	}
+	limpaTela ();
+}
+
+
+void
+mostraProdutos ()
+{
+	cout << "################ Lista de Produtos ################" << endl;
+
+	if ( qtdCadastrados > 0)
+	{
+		
+		for (int i = 0; i < qtdCadastrados; i++)
+		{
+			cout << "Cod. Produto: 000" << i + 1 << endl;
+			cout << "Nome do produto: " << produto[i] << endl;
+			cout << "Quantidade: " << quant[i] << endl;
+			cout << "Preco: " << preco[i] << endl << endl;
+		}
+
+	}
+	else
+	{
+		cout << "Nenhum produto cadastrado" << endl << endl;
+	}
+	limpaTela();
+}
+
+void
+menu ()
+{
+	cout << "################ SET SISTEMAS ################" << endl << endl;
+	cout << "---------------------- MENU ---------------------" << endl;
+	cout << "1 - Cadastrar Produto" << endl;  //OK
+	cout << "2 - Alterar Preco" << endl;      //OK
+	cout << "3 - Remover produto" << endl;    //OK
+	cout << "4 - Alimentar estoque" << endl;  //OK
+	cout << "5 - Venda" << endl;
+	cout << "6 - Lista de produtos" << endl;
+	cout << "7 - Sair" << endl << endl;
+	cout << "Opcao do Menu: ";
+	cin >> opcao;
+	system("clear");
+	if (opcao == 1)
+	{
+	    ordemalfa();
+		leProdutos ();
+	}
+	else if (opcao == 6)
+	{
+        ordemalfa();
+		mostraProdutos ();
+
+	}
+	else if (opcao == 2)
+	{
+	    ordemalfa();
+		AlterarPreco ();
+
+	}
+	else if (opcao == 3)
+	{
+	    ordemalfa();
+		ExcluirProduto ();
+
+	}
+	else if (opcao == 4)
+	{
+	    ordemalfa();
+		AlterarEstoque ();
+
+	}
+	else if (opcao == 5)
+	{
+	    ordemalfa();
+		VendaProduto();
+	}
+	else if (opcao == 7)
+	{
+		system ("exit");
+	}
+	else
+	{
+		cout << "COMANDO INVALIDO!! " << endl <<endl;
+		limpaTela ();
+	}
+}
+
+int
+main ()
+{
+    int contador=0;
+  string login[2]={"Admin","suporte"}, login1,senha[2]={"1234","matheus"}, senha1;
+  do
+    {
+      cout << "informe seu login: ";
+      cin >> login1;
+      cout << "informe sua Senha: ";
+      cin >> senha1;
+      system("clear");
+      if (login1 != login[1]){
+      cout << "Login incorreto! "<< endl;
+      }else if (senha1 != senha[1]){
+      cout << "Senha incorreta! "<< endl;
+      }
+      contador++;
+      if(contador >= 5){
+          cout << "5 tentativas incorretas por favor entre em contato com o suporte!";
+          break;
+        
+      }
+    }
+  while ((login1 != login[1]) || (senha1 != senha[1]));
+  if(contador <5){
+  menu ();
+  }else{
+     system("exit");  
+  }
+	return 0;
+}
+
+
+
